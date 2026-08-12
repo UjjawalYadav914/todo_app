@@ -6,39 +6,39 @@ TaskFlow allows users to create, manage, complete, filter, and delete daily task
 
 ---
 
-## ✨ Features
+##  Features
 
-* ➕ Add new tasks
-* 📋 View all tasks in a clean list
-* ✅ Mark tasks as completed or uncompleted
-* 🗑️ Delete tasks
-* ↩️ Undo recently deleted tasks
-* 👆 Swipe left to delete a task
-* 🔎 Filter tasks by:
+ Add new tasks
+ View all tasks in a clean list
+ Mark tasks as completed or uncompleted
+ Delete tasks
+ Undo recently deleted tasks
+ Swipe left to delete a task
+ Filter tasks by:
 
-  * All
-  * Active
-  * Completed
-* 🧹 Clear completed tasks
-* 📊 View task statistics:
+ All
+ Active
+ Completed
+ Clear completed tasks
+ View task statistics:
 
-  * Total
-  * Pending
-  * Completed
-* 📭 Friendly empty state when there are no tasks
-* 📱 Responsive Material 3 UI
-* 💾 Local in-memory task management
-* 🚫 No backend or API dependency
+Total
+Pending
+Completed
+ Friendly empty state when there are no tasks
+ Responsive Material 3 UI
+ Local in-memory task management
+ No backend or API dependency
 
 ---
 
-## 🛠️ Tech Stack
+##  Tech Stack
 
-* **Flutter** — Application framework
-* **Dart** — Programming language
-* **Material 3** — UI and theming
-* **StatefulWidget & setState()** — Local state management
-* **ListView.builder** — Dynamic task list
+ **Flutter** — Application framework
+ **Dart** — Programming language
+ **Material 3** — UI and theming
+ **StatefulWidget & setState()** — Local state management
+ **ListView.builder** — Dynamic task list
 
 ### Packages Used
 
@@ -48,23 +48,15 @@ The app uses Flutter's built-in widgets and Dart functionality.
 
 ---
 
-## 📁 Project Structure
+##  Project Structure
 
-```text
 lib/
 ├── main.dart
-│
-├── models/
-│   └── task.dart
-│
-├── screens/
-│   └── todo_screen.dart
-│
+├── task.dart
+├── todo_screen.dart
 └── widgets/
-    ├── empty_state.dart
-    └── task_tile.dart
-```
-
+    ├── task_card.dart
+    └── empty_task_view.dart
 ### Folder Responsibilities
 
 **models/**
@@ -80,16 +72,16 @@ The project structure is intentionally lightweight and focuses on keeping the co
 
 ---
 
-## 🚀 Getting Started
+##  Getting Started
 
 ### Prerequisites
 
 Make sure you have the following installed:
 
-* Flutter SDK
-* Dart SDK included with Flutter
-* Android Studio or VS Code
-* Android emulator or physical Android device
+ Flutter SDK
+ Dart SDK included with Flutter
+ Android Studio or VS Code
+ Android emulator or physical Android device
 
 Check your Flutter installation:
 
@@ -99,7 +91,7 @@ flutter doctor
 
 ---
 
-## 📥 Installation
+##  Installation
 
 Clone the repository:
 
@@ -127,7 +119,7 @@ flutter run
 
 ---
 
-## 📱 Build APK
+##  Build APK
 
 To generate a release APK for testing:
 
@@ -143,29 +135,18 @@ build/app/outputs/flutter-apk/app-release.apk
 
 ---
 
-## 🔄 Application Flow
+##  Application Flow
 
-```text
-Launch App
-    │
-    ▼
+App Launch
+    ↓
 TaskFlow Home Screen
-    │
-    ├── Add Task
-    │      └── Task appears in the list
-    │
-    ├── Complete / Uncomplete Task
-    │      └── Task status is updated
-    │
-    ├── Filter Tasks
-    │      ├── All
-    │      ├── Active
-    │      └── Completed
-    │
-    └── Delete Task
-           └── Undo option is available
-```
-
+    ↓
+Add / Manage Tasks
+    ↓
+├── Add Task
+├── Complete / Uncomplete
+├── Filter (All / Active / Completed)
+└── Delete / Undo
 ---
 
 ## 💡 State Management
@@ -180,7 +161,7 @@ This keeps the implementation simple and appropriate for the scope of the assign
 
 ---
 
-# 📝 Technical Questions
+#  Technical Questions
 
 ## 1. What is the difference between StatelessWidget and StatefulWidget?
 
@@ -218,26 +199,26 @@ I am most proud of working on the **Hungzo Delivery App**. I contributed to Flut
 
 ---
 
-## 🧪 Testing Checklist
+##  Testing Checklist
 
 Before submitting the application, the following flows should be tested:
 
-* Add a new task
-* Add multiple tasks
-* Complete a task
-* Uncomplete a task
-* Delete a task
-* Undo a deleted task
-* Swipe left to delete
-* Filter tasks using All, Active, and Completed
-* Clear completed tasks
-* Verify the empty state
-* Submit a task using the keyboard
-* Run the application on an Android emulator or physical device
+ Add a new task
+ Add multiple tasks
+ Complete a task
+ Uncomplete a task
+ Delete a task
+ Undo a deleted task
+ Swipe left to delete
+ Filter tasks using All, Active, and Completed
+ Clear completed tasks
+ Verify the empty state
+ Submit a task using the keyboard
+ Run the application on an Android emulator or physical device
 
 ---
 
-## 🔧 Flutter Version
+##  Flutter Version
 
 Add the exact Flutter version used for this submission.
 
@@ -256,7 +237,7 @@ Dart 3.x.x
 
 ---
 
-## 📦 Dependencies
+## Dependencies
 
 This project does not require any third-party packages.
 
@@ -264,21 +245,19 @@ All functionality is implemented using Flutter's built-in widgets and Dart's sta
 
 ---
 
-## 📌 Project Notes
+##  Project Notes
 
-* Task data is stored locally in memory.
-* Tasks reset when the application is restarted.
-* No backend or API is required.
-* No authentication or database is required.
-* The application focuses on clean UI, readable code, and the core requirements of the assignment.
-* Additional usability features such as filtering, undo delete, swipe delete, and task statistics were added while keeping the implementation simple.
+ Task data is stored locally in memory.
+ Tasks reset when the application is restarted.
+ No backend or API is required.
+ No authentication or database is required.
+ The application focuses on clean UI, readable code, and the core requirements of the assignment.
+ Additional usability features such as filtering, undo delete, swipe delete, and task statistics were added while keeping the implementation simple.
 
 ---
 
-## 👨‍💻 Author
+##  Author
 
 **Ujjawal Yadav**
-
 Flutter Developer
-
 Built with Flutter & Dart.
