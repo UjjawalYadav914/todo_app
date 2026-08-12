@@ -1,26 +1,30 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 
 import '../models/task.dart';
 import '../widgets/empty_state.dart';
 import '../widgets/task_tile.dart';
 
-enum TaskFilter {
-  all,
-  active,
-  completed,
-}
+enum TaskFilter { all, active, completed }
 
 class TodoScreen extends StatefulWidget {
   const TodoScreen({super.key});
+
   @override
   State<TodoScreen> createState() => _TodoScreenState();
 }
 
 class _TodoScreenState extends State<TodoScreen> {
   final List<Task> _tasks = [];
+
   final TextEditingController _taskController = TextEditingController();
   final FocusNode _taskFocusNode = FocusNode();
+
   TaskFilter _selectedFilter = TaskFilter.all;
+
+  // Used to control the delete SnackBar timer.
+  int _deleteMessageId = 0;
 
   @override
   void dispose() {
@@ -67,6 +71,7 @@ class _TodoScreenState extends State<TodoScreen> {
           title: title,
         ),
       );
+
       _taskController.clear();
     });
 
@@ -86,29 +91,45 @@ class _TodoScreenState extends State<TodoScreen> {
       _tasks.remove(task);
     });
 
-    ScaffoldMessenger.of(context).clearSnackBars();
+    // Create a unique ID for this delete message.
+    final messageId = ++_deleteMessageId;
+
+    // Close any currently visible SnackBar first.
+    ScaffoldMessenger.of(context).hideCurrentSnackBar();
+
+    // Show delete message.
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: const Text('Task deleted'),
         behavior: SnackBarBehavior.floating,
+        duration: const Duration(seconds: 5),
         action: SnackBarAction(
           label: 'UNDO',
           onPressed: () {
+            // Stop the current delete timer.
+            _deleteMessageId++;
+
             setState(() {
-              _tasks.insert(
-                index.clamp(0, _tasks.length),
-                task,
-              );
+              _tasks.insert(index.clamp(0, _tasks.length), task);
             });
           },
         ),
       ),
     );
+
+    // Manually close the SnackBar after exactly 5 seconds.
+    Future.delayed(const Duration(seconds: 5), () {
+      if (!mounted) return;
+
+      // Only close if this is still the active delete message.
+      if (messageId == _deleteMessageId) {
+        ScaffoldMessenger.of(context).hideCurrentSnackBar();
+      }
+    });
   }
 
   void _clearCompleted() {
-    final completedTasks =
-        _tasks.where((task) => task.isCompleted).toList();
+    final completedTasks = _tasks.where((task) => task.isCompleted).toList();
 
     if (completedTasks.isEmpty) {
       return;
@@ -128,6 +149,7 @@ class _TodoScreenState extends State<TodoScreen> {
       SnackBar(
         content: Text(message),
         behavior: SnackBarBehavior.floating,
+        duration: const Duration(seconds: 3),
       ),
     );
   }
@@ -150,16 +172,9 @@ class _TodoScreenState extends State<TodoScreen> {
             _buildFilterBar(),
             Expanded(
               child: filteredTasks.isEmpty
-                  ? EmptyState(
-                      onAddTask: _showAddTaskSheet,
-                    )
+                  ? EmptyState(onAddTask: _showAddTaskSheet)
                   : ListView.builder(
-                      padding: const EdgeInsets.fromLTRB(
-                        20,
-                        8,
-                        20,
-                        100,
-                      ),
+                      padding: const EdgeInsets.fromLTRB(20, 8, 20, 100),
                       itemCount: filteredTasks.length,
                       itemBuilder: (context, index) {
                         final task = filteredTasks[index];
@@ -184,9 +199,7 @@ class _TodoScreenState extends State<TodoScreen> {
               icon: const Icon(Icons.add_rounded),
               label: const Text(
                 'New Task',
-                style: TextStyle(
-                  fontWeight: FontWeight.w700,
-                ),
+                style: TextStyle(fontWeight: FontWeight.w700),
               ),
             )
           : null,
@@ -199,10 +212,7 @@ class _TodoScreenState extends State<TodoScreen> {
       padding: const EdgeInsets.fromLTRB(20, 22, 20, 24),
       decoration: const BoxDecoration(
         gradient: LinearGradient(
-          colors: [
-            Color(0xFF5B5FEF),
-            Color(0xFF7478F5),
-          ],
+          colors: [Color(0xFF5B5FEF), Color(0xFF7478F5)],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
@@ -308,29 +318,21 @@ class _TodoScreenState extends State<TodoScreen> {
               onSubmitted: (_) => _addTask(),
               decoration: InputDecoration(
                 hintText: 'What needs to be done?',
-                hintStyle: const TextStyle(
-                  color: Color(0xFF9A9DAB),
-                ),
+                hintStyle: const TextStyle(color: Color(0xFF9A9DAB)),
                 prefixIcon: const Icon(
                   Icons.edit_note_rounded,
                   color: Color(0xFF777B8A),
                 ),
                 filled: true,
                 fillColor: Colors.white,
-                contentPadding: const EdgeInsets.symmetric(
-                  vertical: 16,
-                ),
+                contentPadding: const EdgeInsets.symmetric(vertical: 16),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(16),
-                  borderSide: const BorderSide(
-                    color: Color(0xFFE7E8EF),
-                  ),
+                  borderSide: const BorderSide(color: Color(0xFFE7E8EF)),
                 ),
                 enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(16),
-                  borderSide: const BorderSide(
-                    color: Color(0xFFE7E8EF),
-                  ),
+                  borderSide: const BorderSide(color: Color(0xFFE7E8EF)),
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(16),
@@ -352,11 +354,7 @@ class _TodoScreenState extends State<TodoScreen> {
               child: const SizedBox(
                 height: 56,
                 width: 56,
-                child: Icon(
-                  Icons.add_rounded,
-                  color: Colors.white,
-                  size: 28,
-                ),
+                child: Icon(Icons.add_rounded, color: Colors.white, size: 28),
               ),
             ),
           ),
@@ -404,24 +402,15 @@ class _TodoScreenState extends State<TodoScreen> {
     required String label,
   }) {
     return Container(
-      padding: const EdgeInsets.symmetric(
-        horizontal: 12,
-        vertical: 13,
-      ),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 13),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-          color: const Color(0xFFEDEEF4),
-        ),
+        border: Border.all(color: const Color(0xFFEDEEF4)),
       ),
       child: Column(
         children: [
-          Icon(
-            icon,
-            size: 20,
-            color: const Color(0xFF5B5FEF),
-          ),
+          Icon(icon, size: 20, color: const Color(0xFF5B5FEF)),
           const SizedBox(height: 6),
           Text(
             value,
@@ -450,20 +439,11 @@ class _TodoScreenState extends State<TodoScreen> {
       padding: const EdgeInsets.fromLTRB(20, 4, 20, 4),
       child: Row(
         children: [
-          _filterButton(
-            title: 'All',
-            filter: TaskFilter.all,
-          ),
+          _filterButton(title: 'All', filter: TaskFilter.all),
           const SizedBox(width: 8),
-          _filterButton(
-            title: 'Active',
-            filter: TaskFilter.active,
-          ),
+          _filterButton(title: 'Active', filter: TaskFilter.active),
           const SizedBox(width: 8),
-          _filterButton(
-            title: 'Completed',
-            filter: TaskFilter.completed,
-          ),
+          _filterButton(title: 'Completed', filter: TaskFilter.completed),
           const Spacer(),
           if (_completedCount > 0)
             TextButton(
@@ -482,10 +462,7 @@ class _TodoScreenState extends State<TodoScreen> {
     );
   }
 
-  Widget _filterButton({
-    required String title,
-    required TaskFilter filter,
-  }) {
+  Widget _filterButton({required String title, required TaskFilter filter}) {
     final isSelected = _selectedFilter == filter;
 
     return GestureDetector(
@@ -496,14 +473,9 @@ class _TodoScreenState extends State<TodoScreen> {
       },
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 180),
-        padding: const EdgeInsets.symmetric(
-          horizontal: 14,
-          vertical: 8,
-        ),
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
         decoration: BoxDecoration(
-          color: isSelected
-              ? const Color(0xFF5B5FEF)
-              : Colors.white,
+          color: isSelected ? const Color(0xFF5B5FEF) : Colors.white,
           borderRadius: BorderRadius.circular(20),
           border: Border.all(
             color: isSelected
@@ -516,9 +488,7 @@ class _TodoScreenState extends State<TodoScreen> {
           style: TextStyle(
             fontSize: 12,
             fontWeight: FontWeight.w700,
-            color: isSelected
-                ? Colors.white
-                : const Color(0xFF777B8A),
+            color: isSelected ? Colors.white : const Color(0xFF777B8A),
           ),
         ),
       ),
