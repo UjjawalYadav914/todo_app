@@ -1,7 +1,5 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
-
 import '../models/task.dart';
 import '../widgets/empty_state.dart';
 import '../widgets/task_tile.dart';
@@ -22,8 +20,6 @@ class _TodoScreenState extends State<TodoScreen> {
   final FocusNode _taskFocusNode = FocusNode();
 
   TaskFilter _selectedFilter = TaskFilter.all;
-
-  // Used to control the delete SnackBar timer.
   int _deleteMessageId = 0;
 
   @override
@@ -91,13 +87,8 @@ class _TodoScreenState extends State<TodoScreen> {
       _tasks.remove(task);
     });
 
-    // Create a unique ID for this delete message.
     final messageId = ++_deleteMessageId;
-
-    // Close any currently visible SnackBar first.
     ScaffoldMessenger.of(context).hideCurrentSnackBar();
-
-    // Show delete message.
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: const Text('Task deleted'),
@@ -106,9 +97,7 @@ class _TodoScreenState extends State<TodoScreen> {
         action: SnackBarAction(
           label: 'UNDO',
           onPressed: () {
-            // Stop the current delete timer.
             _deleteMessageId++;
-
             setState(() {
               _tasks.insert(index.clamp(0, _tasks.length), task);
             });
@@ -116,12 +105,8 @@ class _TodoScreenState extends State<TodoScreen> {
         ),
       ),
     );
-
-    // Manually close the SnackBar after exactly 5 seconds.
     Future.delayed(const Duration(seconds: 5), () {
       if (!mounted) return;
-
-      // Only close if this is still the active delete message.
       if (messageId == _deleteMessageId) {
         ScaffoldMessenger.of(context).hideCurrentSnackBar();
       }
@@ -144,7 +129,6 @@ class _TodoScreenState extends State<TodoScreen> {
 
   void _showMessage(String message) {
     ScaffoldMessenger.of(context).hideCurrentSnackBar();
-
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(message),
@@ -178,7 +162,6 @@ class _TodoScreenState extends State<TodoScreen> {
                       itemCount: filteredTasks.length,
                       itemBuilder: (context, index) {
                         final task = filteredTasks[index];
-
                         return TaskTile(
                           key: ValueKey(task.id),
                           task: task,
